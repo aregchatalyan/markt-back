@@ -15,7 +15,8 @@ const config = {
   SMTP_HOST: process.env.SMTP_HOST,
   SMTP_USER: process.env.SMTP_USER,
   SMTP_PASS: process.env.SMTP_PASS,
-  CLIENT_URL: process.env.CLIENT_URL
+  CLIENT_URL: process.env.CLIENT_URL,
+  DEVELOPMENT: process.env.NODE_ENV === 'development'
 }
 
 export default config;
