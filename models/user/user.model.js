@@ -16,7 +16,7 @@ const UserSchema = new Schema({
   username: {
     type: String,
     required: false,
-    minLength: 2,
+    default: '',
     maxLength: 20
   },
   email: {
@@ -38,6 +38,16 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true
+  },
+  secret: {
+    type: String,
+    required: false,
+    default: undefined
+  },
+  active: {
+    type: Boolean,
+    required: true,
+    default: false
   }
 }, {
   versionKey: false,

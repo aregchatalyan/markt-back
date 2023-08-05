@@ -1,20 +1,26 @@
-import jwt from 'jsonwebtoken';
-import config from '../../config.js';
+import ApiError from '../api.error.js';
+import UserDto from '../../models/user/user.dto.js';
+import UserModel from '../../models/user/user.model.js';
+import tokenService from '../../services/token.service.js';
 
-const authMiddleware = (req, res, next) => {
+const authMiddleware = async (req, res, next) => {
   if (req.method === 'OPTIONS') return next();
 
   try {
-    const token = req.headers.authorization.split('')[1];
+    const access_token = req.headers.authorization.split(' ')[1];
+    if (!access_token) return next(ApiError.Unauthorized());
 
-    const user = jwt.verify(token, config.JWT_ACCESS_SECRET);
-    if (!user) next('Unauthorized');
+    const user = tokenService.validateAccessToken(access_token);
+    if (!user) return next(ApiError.Unauthorized());
 
-    // TODO Implement other cases;
+    const db_user = await UserModel.findById(user.id);
+    if (!db_user) return next(ApiError.Unauthorized());
+
+    req.user = new UserDto(db_user).get();
 
     next();
   } catch (e) {
-    next('Unauthorized');
+    return next(ApiError.Unauthorized());
   }
 }
 

@@ -1,41 +1,45 @@
+import fs from 'fs';
 import cors from 'cors';
 import http from 'http';
+import https from 'https';
 import morgan from 'morgan';
 import express from 'express';
 import mongoose from 'mongoose';
 import cookie from 'cookie-parser';
+
 import config from './config.js';
-import routes from './api/api.routes.js';
+import { auth } from './api/api.routes.js';
+import { errorHandler, send } from './api/api.middlewares.js';
 
 const app = express();
-const { PORT, HOST, DB_URI, DB_NAME, DB_USER, DB_PASS, DEVELOPMENT } = config;
 
-app.use(cors());
+app.use(cors({ origin: config.CLIENT_URL, credentials: true }));
 app.use(cookie());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-if (DEVELOPMENT) app.use(morgan('dev'));
+if (config.DEVELOPMENT) app.use(morgan('dev'));
 
-app.use('/', routes);
+app.use(send);
+app.use('/api', auth);
+app.use(errorHandler);
 
-const server = http.createServer(app);
+const server = config.DEVELOPMENT
+  ? https.createServer({
+    key: await fs.promises.readFile(new URL('./ssl/key.pem', import.meta.url)),
+    cert: await fs.promises.readFile(new URL('./ssl/cert.pem', import.meta.url))
+  }, app)
+  : http.createServer(app);
 
 try {
-  await mongoose.connect(DB_URI, {
-    dbName: DB_NAME,
-    user: DB_USER,
-    pass: DB_PASS
+  await mongoose.connect(config.DB_URI, {
+    dbName: config.DB_NAME,
+    user: config.DB_USER,
+    pass: config.DB_PASS
   });
 
-  server.listen(PORT, HOST);
-
-  server.on('listening', () => {
-    console.log(`Running on http://localhost:${ PORT }`);
-  });
-
-  server.on('error', (e) => {
-    console.error(e) ;
+  server.listen(+config.PORT, config.HOST, () => {
+    console.log(`Running on https://${ config.HOST }:${ config.PORT }`);
   });
 } catch (e) {
   console.error(e.message);

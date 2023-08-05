@@ -1,5 +1,1 @@
-import authRoutes from './auth/auth.routes.js';
-
-const routes = [ authRoutes ]
-
-export default routes;
+export { default as auth } from './auth/auth.routes.js';

@@ -1,5 +1,13 @@
+# npm
 node_modules
 package-lock.json
 
+# env
 .env.development
 .env.production
+
+# ssl
+**.pem
+
+# temp
+client

@@ -1,28 +1,45 @@
+import config from '../../config.js';
 import authService from './auth.service.js';
+import UserDto from '../../models/user/user.dto.js';
 
 class AuthController {
-  signUp = async (req, res) => {
-    const { first_name, last_name, email, password } = req.body;
+  async signUp(req, res) {
+    const user = await authService.signUp(new UserDto(req.body).create());
 
-    const user = await authService.signUp({ first_name, last_name, email, password });
-    if (!user) return res.status(404).json({ message: 'User with this email address already exists' });
-
-    res.status(200).json(user);
+    res.success(201, user);
   }
 
-  signIn = async (req, res) => {
-    const user = await authService.signIn();
-    res.status(200).json(user);
+  async activate(req, res) {
+    const { secret } = req.params;
+
+    await authService.activate(secret);
+
+    res.redirect(config.CLIENT_URL);
   }
 
-  logout = async (req, res) => {
-    const user = await authService.logout();
-    res.status(200).json(user);
+  async signIn(req, res) {
+    const user = await authService.signIn(req.body);
+
+    res.cookie('refresh_token', user.refresh_token, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.success(200, user);
   }
 
-  refresh = async (req, res) => {
-    const user = await authService.refresh();
-    res.status(200).json(user);
+  async logout(req, res) {
+    const { refresh_token } = req.cookies;
+
+    await authService.logout(refresh_token);
+
+    res.clearCookie('refresh_token');
+    res.success(200);
+  }
+
+  async refresh(req, res) {
+    const { refresh_token } = req.cookies;
+
+    const user = await authService.refresh(refresh_token);
+
+    res.cookie('refresh_token', user.refresh_token, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.success(200, user);
   }
 }
 
