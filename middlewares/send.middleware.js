@@ -1,14 +1,4 @@
-import ApiError from './api.error.js';
-
-export const errorHandler = (err, req, res, _) => {
-  if (err && err instanceof ApiError) {
-    return res.error(err.status, err.message, err.errors);
-  }
-
-  return console.error(err.message);
-}
-
-export const send = (req, res, next) => {
+const sendMiddleware = (req, res, next) => {
   const codes = {
     200: 'OK',
     201: 'Created',
@@ -38,3 +28,5 @@ export const send = (req, res, next) => {
 
   next();
 }
+
+export default sendMiddleware;

@@ -14,7 +14,7 @@ class AuthController {
 
     await authService.activate(secret);
 
-    res.redirect(config.CLIENT_URL);
+    res.redirect(`${ config.CLIENT_URL }/auth/sign-in`);
   }
 
   async signIn(req, res) {
@@ -30,7 +30,7 @@ class AuthController {
     await authService.logout(refresh_token);
 
     res.clearCookie('refresh_token');
-    res.success(200);
+    res.redirect(`${ config.CLIENT_URL }/auth/sign-in`);
   }
 
   async refresh(req, res) {

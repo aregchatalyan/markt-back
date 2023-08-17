@@ -1,25 +1,24 @@
 import { Router } from 'express';
-import { tryCatch } from '../api.decorators.js';
 import authController from './auth.controller.js';
 import authMiddleware from './auth.middleware.js';
+import tryCatchDecorator from '../try-catch.decorator.js';
 
 const router = Router();
 
 router.post('/auth/sign-up',
-  tryCatch(authController.signUp)
+  tryCatchDecorator(authController.signUp)
 );
 
 router.get('/auth/activate/:secret',
-  tryCatch(authController.activate)
+  tryCatchDecorator(authController.activate)
 );
 
 router.post('/auth/sign-in',
-  tryCatch(authController.signIn)
+  tryCatchDecorator(authController.signIn)
 );
 
 router.post('/auth/logout',
-  authMiddleware,
-  tryCatch(authController.logout)
+  tryCatchDecorator(authController.logout)
 );
 
 router.post('/auth/test',
@@ -30,7 +29,7 @@ router.post('/auth/test',
 );
 
 router.get('/auth/refresh',
-  tryCatch(authController.refresh)
+  tryCatchDecorator(authController.refresh)
 );
 
 export default router;

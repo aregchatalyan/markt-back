@@ -1,1 +1,7 @@
-export { default as auth } from './auth/auth.routes.js';
+import auth from './auth/auth.routes.js';
+
+const routes = [
+  auth
+];
+
+export default routes;

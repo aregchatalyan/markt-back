@@ -1,4 +1,4 @@
-export const tryCatch = (handler) => {
+const tryCatchDecorator = (handler) => {
   return async (req, res, next) => {
     try {
       await handler(req, res, next);
@@ -7,3 +7,5 @@ export const tryCatch = (handler) => {
     }
   }
 }
+
+export default tryCatchDecorator;

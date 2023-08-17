@@ -21,8 +21,12 @@ class AuthService {
 
     const user = await UserModel.create(dto);
 
-    await mailService.sendMail(user.email, 'user-activate', {
-      link: `${ config.CLIENT_ACTIVATE_URL }/${ user.secret }`
+    await mailService.sendMail({
+      to: user.email,
+      template: 'user-activate',
+      payload: {
+        link: `${ config.CLIENT_ACTIVATE_URL }/${ user.secret }`
+      }
     });
 
     return new UserDto(user).get();
