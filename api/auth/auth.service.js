@@ -39,7 +39,7 @@ class AuthService {
 
   async signIn(dto) {
     const user = await UserModel.findOne({ email: dto.email });
-    if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND);
+    if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND_EMAIL);
 
     const isValid = await bcrypt.compare(dto.password, user.password);
     if (!isValid) throw ApiError.BadRequest(USER_MESSAGE.WRONG_CREDENTIALS);

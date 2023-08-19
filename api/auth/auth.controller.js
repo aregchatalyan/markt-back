@@ -30,7 +30,8 @@ class AuthController {
     await authService.logout(refresh_token);
 
     res.clearCookie('refresh_token');
-    res.redirect(`${ config.CLIENT_URL }/auth/sign-in`);
+    // res.redirect(`${ config.CLIENT_URL }/auth/sign-in`);
+    res.end();
   }
 
   async refresh(req, res) {

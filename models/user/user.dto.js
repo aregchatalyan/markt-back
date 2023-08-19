@@ -28,7 +28,7 @@ class UserDto {
   }
 
   create() {
-    return _.pick(this, [ 'first_name', 'last_name', 'email', 'password' ]);
+    return _.pick(this, [ 'first_name', 'last_name', 'username', 'email', 'phone', 'password' ]);
   }
 
   get() {
@@ -36,7 +36,9 @@ class UserDto {
   }
 
   update() {
-    return _.omitBy(this, (value) => typeof value !== 'undefined');
+    const picked = _.pick(this, [ 'first_name', 'last_name', 'username', 'email', 'avatar', 'phone', 'password' ]);
+
+    return _.omitBy(picked, (value, l) => typeof value === 'undefined');
   }
 }
 

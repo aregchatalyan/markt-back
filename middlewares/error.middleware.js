@@ -10,7 +10,8 @@ const errorMiddleware = (err, req, res, _) => {
     return res.error(400, err.code);
   }
 
-  return console.error(err.message);
+  console.log(err.message);
+  res.error(500, 'Oops, sorry we will fix it soon.');
 }
 
 export default errorMiddleware;

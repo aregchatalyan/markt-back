@@ -2,33 +2,32 @@ import { Router } from 'express';
 import authController from './auth.controller.js';
 import authMiddleware from './auth.middleware.js';
 import tryCatchDecorator from '../try-catch.decorator.js';
+import authValidations from './auth.validations.js';
+import validationMiddleware from '../../middlewares/validation.middleware.js';
 
 const router = Router();
 
-router.post('/auth/sign-up',
+router.post('/sign-up',
+  validationMiddleware(authValidations.sign_up),
   tryCatchDecorator(authController.signUp)
 );
 
-router.get('/auth/activate/:secret',
+router.get('/activate/:secret',
+  validationMiddleware(authValidations.activate),
   tryCatchDecorator(authController.activate)
 );
 
-router.post('/auth/sign-in',
+router.post('/sign-in',
+  validationMiddleware(authValidations.sign_in),
   tryCatchDecorator(authController.signIn)
 );
 
-router.post('/auth/logout',
+router.post('/logout',
+  authMiddleware,
   tryCatchDecorator(authController.logout)
 );
 
-router.post('/auth/test',
-  authMiddleware,
-  (req, res) => {
-    res.success(200, { message: 'Hello' })
-  }
-);
-
-router.get('/auth/refresh',
+router.get('/refresh',
   tryCatchDecorator(authController.refresh)
 );
 
