@@ -6,7 +6,8 @@ package-lock.json
 .env.development
 .env.production
 
-# ssl
-**.pem
+# files
+/uploads
 
 # temp
+/public/**/*.html

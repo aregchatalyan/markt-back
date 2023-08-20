@@ -1,0 +1,16 @@
+{
+  "restartable": "rs",
+  "ignore": [
+    ".git",
+    "node_modules/**/node_modules"
+  ],
+  "verbose": true,
+  "execMap": {
+    "js": "node --async-stack-traces"
+  },
+  "watch": [ "." ],
+  "ext": "js json",
+  "env": {
+    "NODE_ENV": "development"
+  }
+}

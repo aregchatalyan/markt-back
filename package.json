@@ -5,11 +5,10 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "cross-env NODE_ENV=production node index.js",
-    "dev": "cross-env NODE_ENV=development nodemon index.js",
-    "start:client": "npm start --prefix client",
-    "pm2:start": "pm2 start process.json --env production",
-    "pm2:dev": "pm2 restart process.json --env development"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "pm2:start": "pm2 start process.json",
+    "start:client": "npm start --prefix client"
   },
   "keywords": [],
   "author": "",
@@ -18,7 +17,6 @@
     "bcrypt": "^5.1.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
-    "cross-env": "^7.0.3",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
     "express-validator": "^7.0.1",
