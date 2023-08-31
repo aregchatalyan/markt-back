@@ -5,4 +5,5 @@ Dockerfile
 compose.yml
 .dockerignore
 
-.env.example
+.env.*
+!.env.production

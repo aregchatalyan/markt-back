@@ -1,23 +1,31 @@
 import { model, Schema } from 'mongoose';
 
+export const VALID_USER = {
+  FIRST_NAME: { min: 2, max: 20 },
+  LAST_NAME: { min: 2, max: 20 },
+  USERNAME: { min: 2, max: 12 },
+  PASSWORD: { min: 8, max: 20 }
+}
+
 const UserSchema = new Schema({
   first_name: {
     type: String,
     required: true,
-    minLength: 2,
-    maxLength: 20
+    minLength: VALID_USER.FIRST_NAME.min,
+    maxLength: VALID_USER.FIRST_NAME.max
   },
   last_name: {
     type: String,
     required: true,
-    minLength: 2,
-    maxLength: 20
+    minLength: VALID_USER.LAST_NAME.min,
+    maxLength: VALID_USER.LAST_NAME.max
   },
   username: {
     type: String,
     required: false,
     default: '',
-    maxLength: 20
+    minLength: VALID_USER.USERNAME.min,
+    maxLength: VALID_USER.USERNAME.max
   },
   email: {
     type: String,

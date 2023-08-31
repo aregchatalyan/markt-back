@@ -3,7 +3,7 @@ import path from 'path';
 import nodemailer from 'nodemailer';
 import handlebars from 'handlebars';
 import config from '../config.js';
-import { __dirname } from '../utils/index.js';
+import { dirname } from '../utils/index.js';
 
 class MailService {
   #transporter = nodemailer.createTransport({
@@ -18,7 +18,7 @@ class MailService {
 
   async sendMail({ to, from = config.SMTP_USER, template, subject = 'Markt Store', payload }) {
     try {
-      const root = path.join(__dirname(import.meta.url), '../');
+      const root = path.join(dirname(import.meta.url), '../');
 
       const template_file = await fs.promises.readFile(`${ root }/public/templates/${ template }.hbs`, 'utf-8');
 

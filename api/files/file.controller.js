@@ -1,6 +1,6 @@
 import path from 'path';
 import fileService from './file.service.js';
-import { __dirname } from '../../utils/index.js';
+import { dirname } from '../../utils/index.js';
 
 class FileController {
   async getFile(req, res) {
@@ -8,7 +8,7 @@ class FileController {
 
     const file = await fileService.getFile(user_id, file_name);
 
-    const root = path.join(__dirname(import.meta.url), '../', '../');
+    const root = path.join(dirname(import.meta.url), '../../');
 
     res.sendFile(`${ root }/${ file }`);
   }

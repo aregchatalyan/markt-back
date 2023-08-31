@@ -5,8 +5,8 @@ import ApiError from '../api.error.js';
 import apiMessages from '../api.messages.js';
 import UserDto from '../../models/user/user.dto.js';
 import UserModel from '../../models/user/user.model.js';
-import tokenService from '../../services/token.service.js';
 import mailService from '../../services/mail.service.js';
+import tokenService from '../../services/token.service.js';
 
 const { USER_MESSAGE } = apiMessages;
 

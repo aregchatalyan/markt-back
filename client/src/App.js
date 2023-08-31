@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Home, SignIn } from './components';
+import Navbar from './components/navbar/Navbar';
 
 const App = () => {
   const [ user, setUser ] = useState({});
@@ -11,13 +12,16 @@ const App = () => {
   }, [ user ]);
 
   return (
-    <Routes>
-      <Route path="/" element={ <SignIn setUser={ setUser }/> }/>
+    <>
+      <Navbar/>
+      <Routes>
+        <Route path="/" element={ <SignIn setUser={ setUser }/> }/>
 
-      { authenticated &&
-        <Route path="/test" element={ <Home user={ user }/> }/>
-      }
-    </Routes>
+        { authenticated &&
+          <Route path="/test" element={ <Home user={ user }/> }/>
+        }
+      </Routes>
+    </>
   );
 }
 

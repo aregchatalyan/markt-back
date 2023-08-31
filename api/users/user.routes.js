@@ -1,29 +1,34 @@
 import { Router } from 'express';
-import userController from './user.controller.js';
+import { prey } from '../../utils/index.js';
 import authMiddleware from '../auth/auth.middleware.js';
-import tryCatchDecorator from '../try-catch.decorator.js';
-import uploadMiddleware from '../../middlewares/upload.middleware.js';
-import userValidations from './user.validations.js';
-import validationMiddleware from '../../middlewares/validation.middleware.js';
+import authController from './user.controller.js';
+import authValidations from './user.validations.js';
+import { upload } from '../../middlewares/index.js';
 
 const router = Router();
 
 router.get('/:user_id',
   authMiddleware,
-  validationMiddleware(userValidations.get_user),
-  tryCatchDecorator(userController.getUser)
+  authValidations.get_user,
+  prey(authController.getUser)
 );
 
 router.get('/',
   authMiddleware,
-  tryCatchDecorator(userController.getAllUsers)
+  prey(authController.getAllUsers)
 );
 
-router.put('/:user_id',
+router.put('/',
   authMiddleware,
-  uploadMiddleware.single('avatar'),
-  validationMiddleware(userValidations.update_user, true),
-  tryCatchDecorator(userController.updateUser)
+  upload.single('avatar'),
+  authValidations.update_user,
+  prey(authController.updateUser)
+);
+
+router.delete('/',
+  authMiddleware,
+  authValidations.delete_user,
+  prey(authController.deleteUser)
 );
 
 export default router;
