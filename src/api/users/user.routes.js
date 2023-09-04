@@ -20,9 +20,14 @@ user.get('/',
 
 user.put('/',
   authMiddleware,
-  uploadMiddleware.single('avatar'),
   userValidations.update_user,
   prey(UserController.updateUser)
+);
+
+user.patch('/',
+  authMiddleware,
+  uploadMiddleware.single('avatar'),
+  prey(UserController.uploadAvatar)
 );
 
 user.delete('/',
@@ -30,4 +35,3 @@ user.delete('/',
   userValidations.delete_user,
   prey(UserController.deleteUser)
 );
-

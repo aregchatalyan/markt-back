@@ -6,7 +6,7 @@ import { config } from '../config.js';
 import { dirname } from '../utils/index.js';
 
 export class MailService {
-  #transporter = nodemailer.createTransport({
+  static #transporter = nodemailer.createTransport({
     host: config.SMTP_HOST,
     port: config.SMTP_PORT,
     secure: false,
@@ -16,7 +16,7 @@ export class MailService {
     }
   });
 
-  async sendMail({ to, from = config.SMTP_USER, template, subject = 'Markt Store', payload }) {
+  static async sendMail({ to, from = config.SMTP_USER, template, subject = 'Markt Store', payload }) {
     try {
       const root = path.join(dirname(import.meta.url), '../');
 

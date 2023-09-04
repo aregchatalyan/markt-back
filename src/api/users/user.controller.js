@@ -19,9 +19,15 @@ export class UserController {
   static async updateUser(req, res) {
     const { id: user_id } = req.user;
 
-    if (req?.file?.path) req.body.avatar = req.file.path;
-
     const user = await UserService.updateUser(user_id, new UserDto(req.body).update());
+
+    res.success(200, user);
+  }
+
+  static async uploadAvatar(req, res) {
+    const { id: user_id } = req.user;
+
+    const user = await UserService.uploadAvatar(user_id, req?.file?.path);
 
     res.success(200, user);
   }

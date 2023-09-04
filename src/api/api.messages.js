@@ -9,5 +9,6 @@ export const apiMessages = {
   },
   FILE_MESSAGE: {
     NOT_FOUND_ID: 'File with this ID not found.',
+    NOT_SELECTED: 'Choose file for avatar.',
   }
 }

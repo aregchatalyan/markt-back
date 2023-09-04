@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   static async signIn(dto) {
-    const user = await UserModel.findOne({ email: dto.email });
+    const user = await UserModel.findOne({ email: dto.email, active: true });
     if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND_EMAIL);
 
     const isValid = await bcrypt.compare(dto.password, user.password);

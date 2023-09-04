@@ -5,29 +5,43 @@ import { apiMessages } from '../api.messages.js';
 import { UserDto } from '../../models/user/user.dto.js';
 import { UserModel } from '../../models/user/user.model.js';
 
-const { USER_MESSAGE } = apiMessages;
+const { USER_MESSAGE, FILE_MESSAGE } = apiMessages;
 
 export class UserService {
-  async getUser(id) {
+  static async getUser(id) {
     const user = await UserModel.findOne({ _id: id, active: true });
     if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND_ID);
 
     return new UserDto(user).get();
   }
 
-  async getAllUsers() {
+  static async getAllUsers() {
     const users = await UserModel.find({ active: true });
 
     return users.map(user => new UserDto(user).get());
   }
 
-  async updateUser(id, dto) {
+  static async updateUser(id, dto) {
+    if (dto.password) {
+      const salt = await bcrypt.genSalt(10);
+      dto.password = await bcrypt.hash(dto.password, salt);
+    }
     const candidate = await UserModel.findOneAndUpdate({ _id: id, active: true }, { ...dto });
+    if (!candidate) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND);
+
+    const user = await UserModel.findById(id);
+
+    return new UserDto(user).get();
+  }
+
+  static async uploadAvatar(id, avatar) {
+    if (!avatar) throw ApiError.BadRequest(FILE_MESSAGE.NOT_SELECTED);
+
+    const candidate = await UserModel.findOneAndUpdate({ _id: id, active: true }, { avatar });
     if (!candidate) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND);
 
     if (candidate.avatar) {
       try {
-        await fs.promises.stat(candidate.avatar);
         await fs.promises.unlink(candidate.avatar);
       } catch (e) {
         console.error('The file was deleted under strange circumstances. 🤠');
@@ -39,7 +53,7 @@ export class UserService {
     return new UserDto(user).get();
   }
 
-  async deleteUser(id, password) {
+  static async deleteUser(id, password) {
     const candidate = await UserModel.findOne({ _id: id, active: true });
     if (!candidate) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND);
 
@@ -50,7 +64,6 @@ export class UserService {
 
     if (candidate.avatar) {
       try {
-        await fs.promises.stat(candidate.avatar);
         await fs.promises.unlink(candidate.avatar);
       } catch (e) {
         console.error('The file was deleted under strange circumstances. 🤠');
