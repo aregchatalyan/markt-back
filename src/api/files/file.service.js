@@ -8,7 +8,7 @@ const { FILE_MESSAGE } = apiMessages;
 export class FileService {
   static async getFile(user_id, file_name) {
     const user = await UserModel.findOne({
-      _id: user_id,
+      _id:    user_id,
       active: true,
       avatar: { $regex: file_name, $options: 'i' }
     });

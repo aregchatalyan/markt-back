@@ -10,7 +10,7 @@ const app = express();
 
 app.use(cors({
   credentials: true,
-  origin: config.CLIENT_URL
+  origin:      config.CLIENT_URL
 }));
 
 app.use(cookie());
@@ -26,12 +26,12 @@ routes(app);
 try {
   await mongoose.connect(config.DB_URI, {
     dbName: config.DB_NAME,
-    user: config.DB_USER,
-    pass: config.DB_PASS
+    user:   config.DB_USER,
+    pass:   config.DB_PASS
   });
   console.log('MongoDB connected.');
 
-  app.listen(+config.PORT, config.HOST, () => {
+  app.listen(config.PORT, config.HOST, () => {
     console.log(`Running on http://${ config.HOST }:${ config.PORT }`);
   });
 } catch (e) {

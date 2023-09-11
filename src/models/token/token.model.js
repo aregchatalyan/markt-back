@@ -1,13 +1,13 @@
 import { model, Schema } from 'mongoose';
 
 const TokenSchema = new Schema({
-  user: {
-    type: Schema.Types.ObjectId,
+  user:          {
+    type:     Schema.Types.ObjectId,
     required: true,
-    ref: 'User'
+    ref:      'User'
   },
   refresh_token: {
-    type: String,
+    type:     String,
     required: true
   }
 }, {

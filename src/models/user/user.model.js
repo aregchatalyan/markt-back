@@ -2,60 +2,60 @@ import { model, Schema } from 'mongoose';
 
 export const VALID_USER = {
   FIRST_NAME: { min: 2, max: 20 },
-  LAST_NAME: { min: 2, max: 20 },
-  USERNAME: { min: 2, max: 12 },
-  PASSWORD: { min: 8, max: 20 }
+  LAST_NAME:  { min: 2, max: 20 },
+  USERNAME:   { min: 2, max: 12 },
+  PASSWORD:   { min: 8, max: 20 }
 }
 
 const UserSchema = new Schema({
   first_name: {
-    type: String,
-    required: true,
+    type:      String,
+    required:  true,
     minLength: VALID_USER.FIRST_NAME.min,
     maxLength: VALID_USER.FIRST_NAME.max
   },
-  last_name: {
-    type: String,
-    required: true,
+  last_name:  {
+    type:      String,
+    required:  true,
     minLength: VALID_USER.LAST_NAME.min,
     maxLength: VALID_USER.LAST_NAME.max
   },
-  username: {
-    type: String,
-    required: false,
-    default: '',
+  username:   {
+    type:      String,
+    required:  false,
+    default:   '',
     minLength: VALID_USER.USERNAME.min,
     maxLength: VALID_USER.USERNAME.max
   },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
+  email:      {
+    type:      String,
+    required:  true,
+    unique:    true,
     lowercase: true
   },
-  avatar: {
-    type: String,
+  avatar:     {
+    type:     String,
     required: false,
-    default: ''
+    default:  ''
   },
-  phone: {
-    type: String,
+  phone:      {
+    type:     String,
     required: false,
-    default: ''
+    default:  ''
   },
-  password: {
-    type: String,
+  password:   {
+    type:     String,
     required: true
   },
-  secret: {
-    type: String,
+  secret:     {
+    type:     String,
     required: false,
-    default: undefined
+    default:  undefined
   },
-  active: {
-    type: Boolean,
+  active:     {
+    type:     Boolean,
     required: true,
-    default: false
+    default:  false
   }
 }, {
   versionKey: false,

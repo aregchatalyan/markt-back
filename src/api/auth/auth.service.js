@@ -1,5 +1,4 @@
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
 import { config } from '../../config.js';
 import { ApiError } from '../api.error.js';
 import { apiMessages } from '../api.messages.js';
@@ -7,6 +6,7 @@ import { UserDto } from '../../models/user/user.dto.js';
 import { UserModel } from '../../models/user/user.model.js';
 import { MailService } from '../../services/mail.service.js';
 import { TokenService } from '../../services/token.service.js';
+import { randomBytes } from '../../utils/index.js';
 
 const { USER_MESSAGE } = apiMessages;
 
@@ -17,14 +17,14 @@ export class AuthService {
 
     const salt = await bcrypt.genSalt(10);
     dto.password = await bcrypt.hash(dto.password, salt);
-    dto.secret = crypto.randomBytes(4).toString('hex');
+    dto.secret = randomBytes(8);
 
     const user = await UserModel.create(dto);
 
     await MailService.sendMail({
-      to: user.email,
+      to:       user.email,
       template: 'user-activate',
-      payload: {
+      payload:  {
         link: `${ config.CLIENT_ACTIVATE_URL }/${ user.secret }`
       }
     });
@@ -66,7 +66,7 @@ export class AuthService {
     const user = await UserModel.findById(token_user.id);
     const user_data = new UserDto(user).get();
 
-    const tokens = TokenService.generateTokens({ ...user_data });
+    const tokens = TokenService.generateTokens(user_data);
     await TokenService.saveRefreshToken(user_data.id, tokens.refresh_token);
 
     return { ...user_data, ...tokens };

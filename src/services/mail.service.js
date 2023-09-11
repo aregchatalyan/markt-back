@@ -7,10 +7,10 @@ import { dirname } from '../utils/index.js';
 
 export class MailService {
   static #transporter = nodemailer.createTransport({
-    host: config.SMTP_HOST,
-    port: config.SMTP_PORT,
+    host:   config.SMTP_HOST,
+    port:   config.SMTP_PORT,
     secure: false,
-    auth: {
+    auth:   {
       user: config.SMTP_USER,
       pass: config.SMTP_PASS
     }
