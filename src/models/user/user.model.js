@@ -1,10 +1,26 @@
 import { model, Schema } from 'mongoose';
 
 export const VALID_USER = {
-  FIRST_NAME: { min: 2, max: 20 },
-  LAST_NAME:  { min: 2, max: 20 },
-  USERNAME:   { min: 2, max: 12 },
-  PASSWORD:   { min: 8, max: 20 }
+  FIRST_NAME: {
+    min: 2,
+    max: 20
+  },
+  LAST_NAME:  {
+    min: 2,
+    max: 20
+  },
+  USERNAME:   {
+    min: 2,
+    max: 12
+  },
+  PASSWORD:   {
+    min: 8,
+    max: 20
+  },
+  ROLES:      {
+    USER:  'user',
+    ADMIN: 'admin'
+  }
 }
 
 const UserSchema = new Schema({
@@ -56,6 +72,12 @@ const UserSchema = new Schema({
     type:     Boolean,
     required: true,
     default:  false
+  },
+  role:       {
+    type:     String,
+    required: true,
+    default:  VALID_USER.ROLES.USER,
+    enum:     Object.values(VALID_USER.ROLES)
   }
 }, {
   versionKey: false,

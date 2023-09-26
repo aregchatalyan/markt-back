@@ -10,6 +10,7 @@ export class UserDto {
   phone;
   password;
   active;
+  role;
   created_at;
   updated_at;
 
@@ -23,6 +24,7 @@ export class UserDto {
     this.phone = model?.phone;
     this.password = model?.password;
     this.active = model?.active;
+    this.role = model?.role;
     this.created_at = model?.created_at;
     this.updated_at = model?.updated_at;
   }
