@@ -10,19 +10,19 @@ export const authMiddleware = (role) => {
     if (req.method === 'OPTIONS') return next();
 
     try {
-      const access_token = req.headers.authorization.split(' ')[1];
-      if (!access_token) return next(ApiError.Unauthorized());
+      const accessToken = req.headers.authorization.split(' ')[1];
+      if (!accessToken) return next(ApiError.Unauthorized());
 
-      const user = TokenService.validateAccessToken(access_token);
+      const user = TokenService.validateAccessToken(accessToken);
       if (!user) return next(ApiError.Unauthorized());
 
-      const db_user = await UserModel.findById(user.id);
-      if (!db_user) return next(ApiError.Unauthorized());
+      const dbUser = await UserModel.findById(user.id);
+      if (!dbUser) return next(ApiError.Unauthorized());
 
       if (role !== ROLES.ADMIN)
-        if ((user.role !== role) || (db_user.role !== role)) return next(ApiError.Forbidden());
+        if ((user.role !== role) || (dbUser.role !== role)) return next(ApiError.Forbidden());
 
-      req.user = new UserDto(db_user).get();
+      req.user = new UserDto(dbUser).get();
 
       next();
     } catch (e) {

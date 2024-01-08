@@ -5,86 +5,83 @@ export const VALID_USER = {
     min: 2,
     max: 20
   },
-  LAST_NAME:  {
+  LAST_NAME: {
     min: 2,
     max: 20
   },
-  USERNAME:   {
+  USERNAME: {
     min: 2,
     max: 12
   },
-  PASSWORD:   {
+  PASSWORD: {
     min: 8,
     max: 20
   },
-  ROLES:      {
-    USER:  'user',
+  ROLES: {
+    USER: 'user',
     ADMIN: 'admin'
   }
 }
 
 const UserSchema = new Schema({
-  first_name: {
-    type:      String,
-    required:  true,
+  firstName: {
+    type: String,
+    required: true,
     minLength: VALID_USER.FIRST_NAME.min,
     maxLength: VALID_USER.FIRST_NAME.max
   },
-  last_name:  {
-    type:      String,
-    required:  true,
+  lastName: {
+    type: String,
+    required: true,
     minLength: VALID_USER.LAST_NAME.min,
     maxLength: VALID_USER.LAST_NAME.max
   },
-  username:   {
-    type:      String,
-    required:  false,
-    default:   '',
+  username: {
+    type: String,
+    required: false,
+    default: '',
     minLength: VALID_USER.USERNAME.min,
     maxLength: VALID_USER.USERNAME.max
   },
-  email:      {
-    type:      String,
-    required:  true,
-    unique:    true,
+  email: {
+    type: String,
+    required: true,
+    unique: true,
     lowercase: true
   },
-  avatar:     {
-    type:     String,
+  avatar: {
+    type: String,
     required: false,
-    default:  ''
+    default: ''
   },
-  phone:      {
-    type:     String,
+  phone: {
+    type: String,
     required: false,
-    default:  ''
+    default: ''
   },
-  password:   {
-    type:     String,
+  password: {
+    type: String,
     required: true
   },
-  secret:     {
-    type:     String,
+  secret: {
+    type: String,
     required: false,
-    default:  undefined
+    default: undefined
   },
-  active:     {
-    type:     Boolean,
+  active: {
+    type: Boolean,
     required: true,
-    default:  false
+    default: false
   },
-  role:       {
-    type:     String,
+  role: {
+    type: String,
     required: true,
-    default:  VALID_USER.ROLES.USER,
-    enum:     Object.values(VALID_USER.ROLES)
+    default: VALID_USER.ROLES.USER,
+    enum: Object.values(VALID_USER.ROLES)
   }
 }, {
   versionKey: false,
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
+  timestamps: true
 });
 
 export const UserModel = model('User', UserSchema);

@@ -1,21 +1,18 @@
 import { model, Schema } from 'mongoose';
 
 const TokenSchema = new Schema({
-  user:          {
-    type:     Schema.Types.ObjectId,
+  user: {
+    type: Schema.Types.ObjectId,
     required: true,
-    ref:      'User'
+    ref: 'User'
   },
-  refresh_token: {
-    type:     String,
+  refreshToken: {
+    type: String,
     required: true
   }
 }, {
   versionKey: false,
-  timestamps: {
-    createdAt: 'created_at',
-    updatedAt: 'updated_at'
-  }
+  timestamps: true
 });
 
 export const TokenModel = model('Token', TokenSchema);

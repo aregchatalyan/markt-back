@@ -6,11 +6,11 @@ import { UserModel } from '../../models/user/user.model.js';
 const { FILE_MESSAGE } = apiMessages;
 
 export class FileService {
-  static async getFile(user_id, file_name) {
+  static async getFile(userId, filename) {
     const user = await UserModel.findOne({
-      _id:    user_id,
+      _id: userId,
       active: true,
-      avatar: { $regex: file_name, $options: 'i' }
+      avatar: { $regex: filename, $options: 'i' }
     });
     if (!user) throw ApiError.NotFound(FILE_MESSAGE.NOT_FOUND_ID);
 

@@ -5,42 +5,42 @@ import { TokenModel } from '../models/token/token.model.js';
 export class TokenService {
   static generateTokens(payload) {
     return {
-      access_token:  jwt.sign(payload, config.JWT_ACCESS_SECRET, { expiresIn: '1d' }),
-      refresh_token: jwt.sign(payload, config.JWT_REFRESH_SECRET, { expiresIn: '30d' })
+      accessToken: jwt.sign(payload, config.JWT_ACCESS_SECRET, { expiresIn: '1d' }),
+      refreshToken: jwt.sign(payload, config.JWT_REFRESH_SECRET, { expiresIn: '30d' })
     }
   }
 
-  static validateAccessToken(access_token) {
+  static validateAccessToken(accessToken) {
     try {
-      return jwt.verify(access_token, config.JWT_ACCESS_SECRET);
+      return jwt.verify(accessToken, config.JWT_ACCESS_SECRET);
     } catch (e) {
       return null;
     }
   }
 
-  static validateRefreshToken(refresh_token) {
+  static validateRefreshToken(refreshToken) {
     try {
-      return jwt.verify(refresh_token, config.JWT_REFRESH_SECRET);
+      return jwt.verify(refreshToken, config.JWT_REFRESH_SECRET);
     } catch (e) {
       return null;
     }
   }
 
-  static async saveRefreshToken(user_id, refresh_token) {
+  static async saveRefreshToken(user_id, refreshToken) {
     const candidate = await TokenModel.findOne({ user: user_id });
     if (candidate) {
-      candidate.refresh_token = refresh_token;
+      candidate.refreshToken = refreshToken;
       return candidate.save();
     }
 
-    return TokenModel.create({ user: user_id, refresh_token });
+    return TokenModel.create({ user: user_id, refreshToken });
   }
 
-  static async removeRefreshToken(refresh_token) {
-    return TokenModel.findOneAndDelete({ refresh_token });
+  static async removeRefreshToken(refreshToken) {
+    return TokenModel.findOneAndDelete({ refreshToken });
   }
 
-  static async findRefreshToken(refresh_token) {
-    return TokenModel.findOne({ refresh_token });
+  static async findRefreshToken(refreshToken) {
+    return TokenModel.findOne({ refreshToken });
   }
 }

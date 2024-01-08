@@ -9,7 +9,7 @@ export const routes = (app) => {
 
   app.use('/api/auth', auth);
   app.use('/api/user', user);
-  app.use('/uploads', file);
+  app.use('/api/uploads', file);
 
   app.use(errorMiddleware);
 }

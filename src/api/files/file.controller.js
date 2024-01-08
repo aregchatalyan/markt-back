@@ -4,9 +4,9 @@ import { FileService } from './file.service.js';
 
 export class FileController {
   static async getFile(req, res) {
-    const { user_id, file_name } = req.params;
+    const { userId, filename } = req.params;
 
-    const file = await FileService.getFile(user_id, file_name);
+    const file = await FileService.getFile(userId, filename);
 
     const root = path.join(dirname(import.meta.url), '../../../');
 

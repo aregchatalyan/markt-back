@@ -3,11 +3,14 @@ import { prey } from '../../utils/index.js';
 import { authMiddleware } from './auth.middleware.js';
 import { AuthController } from './auth.controller.js';
 import { authValidations } from './auth.validations.js';
+import { VALID_USER } from '../../models/user/user.model.js';
 
 export const auth = Router();
 
+const { ROLES } = VALID_USER;
+
 auth.post('/sign-up',
-  authValidations.sign_up,
+  authValidations.signUp,
   prey(AuthController.signUp)
 );
 
@@ -17,12 +20,12 @@ auth.get('/activate/:secret',
 );
 
 auth.post('/sign-in',
-  authValidations.sign_in,
+  authValidations.signIn,
   prey(AuthController.signIn)
 );
 
 auth.post('/logout',
-  authMiddleware,
+  authMiddleware(ROLES.USER),
   prey(AuthController.logout)
 );
 

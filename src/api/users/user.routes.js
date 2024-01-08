@@ -10,9 +10,14 @@ export const user = Router();
 
 const { ROLES } = VALID_USER;
 
-user.get('/:user_id',
+user.get('/me',
   authMiddleware(ROLES.USER),
-  userValidations.get_user,
+  prey(UserController.me)
+);
+
+user.get('/:userId',
+  authMiddleware(ROLES.USER),
+  userValidations.getUser,
   prey(UserController.getUser)
 );
 
@@ -23,7 +28,7 @@ user.get('/',
 
 user.put('/',
   authMiddleware(ROLES.USER),
-  userValidations.update_user,
+  userValidations.updateUser,
   prey(UserController.updateUser)
 );
 
@@ -35,6 +40,6 @@ user.patch('/',
 
 user.delete('/',
   authMiddleware(ROLES.USER),
-  userValidations.delete_user,
+  userValidations.deleteUser,
   prey(UserController.deleteUser)
 );

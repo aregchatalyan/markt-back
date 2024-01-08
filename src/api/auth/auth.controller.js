@@ -20,26 +20,27 @@ export class AuthController {
   static async signIn(req, res) {
     const user = await AuthService.signIn(req.body);
 
-    res.cookie('refresh_token', user.refresh_token, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.cookie('refreshToken', user.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
     res.success(200, user);
   }
 
   static async logout(req, res) {
-    const { refresh_token } = req.cookies;
+    const { refreshToken } = req.cookies;
+    console.log(refreshToken)
 
-    await AuthService.logout(refresh_token);
+    await AuthService.logout(refreshToken);
 
-    res.clearCookie('refresh_token');
+    res.clearCookie('refreshToken');
     // res.redirect(`${ config.CLIENT_URL }/auth/sign-in`);
     res.end();
   }
 
   static async refresh(req, res) {
-    const { refresh_token } = req.cookies;
+    const { refreshToken } = req.cookies;
 
-    const user = await AuthService.refresh(refresh_token);
+    const user = await AuthService.refresh(refreshToken);
 
-    res.cookie('refresh_token', user.refresh_token, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
+    res.cookie('refreshToken', user.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true });
     res.success(200, user);
   }
 }

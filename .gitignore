@@ -8,6 +8,7 @@ package-lock.json
 
 # files
 /uploads
+/src/rtc/ssl/*.pem
 
 # temp
 /src/public/**/*.html

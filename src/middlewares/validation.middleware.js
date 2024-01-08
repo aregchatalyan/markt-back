@@ -9,9 +9,9 @@ export const validationMiddleware = (checks) => async (req, res, next) => {
   for (const { path, where = 'body', ...check } of checks) {
     chain = validation[where](path);
     income = req[{
-      body:    'body',
-      query:   'query',
-      param:   'params',
+      body: 'body',
+      query: 'query',
+      param: 'params',
       headers: 'header',
       cookies: 'cookie'
     }[where]][path];

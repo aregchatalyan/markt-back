@@ -22,9 +22,9 @@ export class AuthService {
     const user = await UserModel.create(dto);
 
     await MailService.sendMail({
-      to:       user.email,
+      to: user.email,
       template: 'user-activate',
-      payload:  {
+      payload: {
         link: `${ config.CLIENT_ACTIVATE_URL }/${ user.secret }`
       }
     });
@@ -41,34 +41,34 @@ export class AuthService {
     const user = await UserModel.findOne({ email: dto.email, active: true });
     if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND_EMAIL);
 
-    const is_valid = await bcrypt.compare(dto.password, user.password);
-    if (!is_valid) throw ApiError.BadRequest(USER_MESSAGE.WRONG_CREDENTIALS);
+    const isValid = await bcrypt.compare(dto.password, user.password);
+    if (!isValid) throw ApiError.BadRequest(USER_MESSAGE.WRONG_CREDENTIALS);
 
-    const user_data = new UserDto(user).get();
+    const userData = new UserDto(user).get();
 
-    const tokens = TokenService.generateTokens(user_data);
-    await TokenService.saveRefreshToken(user_data.id, tokens.refresh_token);
+    const tokens = TokenService.generateTokens(userData);
+    await TokenService.saveRefreshToken(userData.id, tokens.refreshToken);
 
-    return { ...user_data, ...tokens };
+    return { ...userData, ...tokens };
   }
 
-  static async logout(refresh_token) {
-    return TokenService.removeRefreshToken(refresh_token);
+  static async logout(refreshToken) {
+    return TokenService.removeRefreshToken(refreshToken);
   }
 
-  static async refresh(refresh_token) {
-    if (!refresh_token) throw ApiError.Unauthorized();
+  static async refresh(refreshToken) {
+    if (!refreshToken) throw ApiError.Unauthorized();
 
-    const token_user = TokenService.validateRefreshToken(refresh_token);
-    const db_token = await TokenService.findRefreshToken(refresh_token);
-    if (!token_user || !db_token) throw ApiError.Unauthorized();
+    const tokenUser = TokenService.validateRefreshToken(refreshToken);
+    const dbToken = await TokenService.findRefreshToken(refreshToken);
+    if (!tokenUser || !dbToken) throw ApiError.Unauthorized();
 
-    const user = await UserModel.findById(token_user.id);
-    const user_data = new UserDto(user).get();
+    const user = await UserModel.findById(tokenUser.id);
+    const userData = new UserDto(user).get();
 
-    const tokens = TokenService.generateTokens(user_data);
-    await TokenService.saveRefreshToken(user_data.id, tokens.refresh_token);
+    const tokens = TokenService.generateTokens(userData);
+    await TokenService.saveRefreshToken(userData.id, tokens.refreshToken);
 
-    return { ...user_data, ...tokens };
+    return { ...userData, ...tokens };
   }
 }

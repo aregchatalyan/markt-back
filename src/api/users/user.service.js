@@ -8,6 +8,13 @@ import { UserModel } from '../../models/user/user.model.js';
 const { USER_MESSAGE, FILE_MESSAGE } = apiMessages;
 
 export class UserService {
+  static async me(id) {
+    const user = await UserModel.findOne({ _id: id, active: true });
+    if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND_ID);
+
+    return new UserDto(user).get();
+  }
+
   static async getUser(id) {
     const user = await UserModel.findOne({ _id: id, active: true });
     if (!user) throw ApiError.NotFound(USER_MESSAGE.NOT_FOUND_ID);

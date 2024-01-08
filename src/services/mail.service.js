@@ -7,10 +7,10 @@ import { dirname } from '../utils/index.js';
 
 export class MailService {
   static #transporter = nodemailer.createTransport({
-    host:   config.SMTP_HOST,
-    port:   config.SMTP_PORT,
+    host: config.SMTP_HOST,
+    port: config.SMTP_PORT,
     secure: false,
-    auth:   {
+    auth: {
       user: config.SMTP_USER,
       pass: config.SMTP_PASS
     }
@@ -20,9 +20,9 @@ export class MailService {
     try {
       const root = path.join(dirname(import.meta.url), '../');
 
-      const template_file = await fs.promises.readFile(`${ root }/public/templates/${ template }.hbs`, 'utf-8');
+      const templateFile = await fs.promises.readFile(`${ root }/public/templates/${ template }.hbs`, 'utf-8');
 
-      const html = handlebars.compile(template_file)(payload);
+      const html = handlebars.compile(templateFile)(payload);
 
       await this.#transporter.sendMail({ subject, from, to, html });
     } catch (e) {

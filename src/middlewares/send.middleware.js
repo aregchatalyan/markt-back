@@ -13,17 +13,17 @@ export const sendMiddleware = (req, res, next) => {
 
   res.success = (status, data = null, message = '') => {
     return res.status(status).json({
-      status:  codes[status] || 'Unknown Status',
+      status: codes[status] || 'Unknown Status',
       message: message,
-      data:    data
+      data: data
     });
   }
 
   res.error = (status, message = '', errors = []) => {
     return res.status(status).json({
-      status:  codes[status] || 'Unknown Status',
+      status: codes[status] || 'Unknown Status',
       message: message,
-      errors:  errors
+      errors: errors
     });
   }
 
