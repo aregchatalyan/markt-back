@@ -4,16 +4,11 @@ export class RoomService {
   constructor(roomId, worker, io) {
     this.id = roomId;
 
-    const { mediaCodecs } = settings.router;
+    worker.createRouter({ mediaCodecs: settings.mediaCodecs })
+      .then((router) => this.router = router);
 
-    worker.createRouter({ mediaCodecs })
-      .then(function (router) {
-          this.router = router
-        }.bind(this)
-      );
-
-    this.peers = new Map();
     this.io = io;
+    this.peers = new Map();
   }
 
   addPeer(peer) {
@@ -55,17 +50,13 @@ export class RoomService {
       }
     }
 
-    transport.on('dtlsstatechange', function (dtlsState) {
-        if (dtlsState === 'closed') {
-          console.log('Transport close', { username: this.peers.get(socketId).username });
-          transport.close();
-        }
-      }.bind(this)
-    );
+    transport.on('dtlsstatechange', (dtlsState) => {
+      if (dtlsState === 'closed') transport.close();
+    });
 
-    transport.on('close', () => console.log('Transport close', { username: this.peers.get(socketId).username }));
-
-    console.log('Adding transport', { transportId: transport.id });
+    transport.on('close', () => {
+      console.log('Transport close', { userId: this.peers.get(socketId).userId });
+    });
 
     this.peers.get(socketId).addTransport(transport);
 
@@ -76,7 +67,7 @@ export class RoomService {
         iceCandidates: transport.iceCandidates,
         dtlsParameters: transport.dtlsParameters
       }
-    };
+    }
   }
 
   async connectPeerTransport(socketId, transportId, dtlsParameters) {
@@ -86,25 +77,19 @@ export class RoomService {
   }
 
   async produce(socketId, producerTransportId, rtpParameters, kind) {
-    // handle undefined errors
-    return new Promise(
-      async function (resolve, reject) {
-        let producer = await this.peers.get(socketId).createProducer(producerTransportId, rtpParameters, kind);
+    return new Promise(async (resolve, reject) => {
+      let producer = await this.peers.get(socketId).createProducer(producerTransportId, rtpParameters, kind);
 
-        resolve(producer.id);
+      resolve(producer.id);
 
-        this.broadCast(socketId, 'newProducers', [
-          {
-            producerId: producer.id,
-            producerSocketId: socketId
-          }
-        ]);
-      }.bind(this)
-    );
+      this.broadCast(socketId, 'newProducers', [ {
+        producerId: producer.id,
+        producerSocketId: socketId
+      } ]);
+    });
   }
 
   async consume(socketId, consumerTransportId, producerId, rtpCapabilities) {
-    // handle nulls
     if (!this.router.canConsume({ producerId: producerId, rtpCapabilities })) {
       console.error('Can not consume');
       return;
@@ -114,18 +99,11 @@ export class RoomService {
       .get(socketId)
       .createConsumer(consumerTransportId, producerId, rtpCapabilities);
 
-    consumer.on('producerclose', function () {
-        console.log('Consumer closed due to producerclose event', {
-          username: `${ this.peers.get(socketId).username }`,
-          consumerId: `${ consumer.id }`
-        });
+    consumer.on('producerclose', () => {
+      this.peers.get(socketId).removeConsumer(consumer.id);
 
-        this.peers.get(socketId).removeConsumer(consumer.id);
-
-        // tell client consumer is dead
-        this.io.to(socketId).emit('consumerClosed', { consumerId: consumer.id });
-      }.bind(this)
-    );
+      this.io.to(socketId).emit('consumerClosed', { consumerId: consumer.id });
+    });
 
     return params;
   }
@@ -139,14 +117,14 @@ export class RoomService {
     this.peers.get(socketId).closeProducer(producerId);
   }
 
-  broadCast(socketId, username, data) {
+  broadCast(socketId, userId, data) {
     for (let otherID of Array.from(this.peers.keys()).filter((id) => id !== socketId)) {
-      this.send(otherID, username, data);
+      this.send(otherID, userId, data);
     }
   }
 
-  send(socketId, username, data) {
-    this.io.to(socketId).emit(username, data);
+  send(socketId, userId, data) {
+    this.io.to(socketId).emit(userId, data);
   }
 
   getPeers() {

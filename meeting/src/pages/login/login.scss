@@ -1,0 +1,58 @@
+.container {
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .login {
+    width: 240px;
+    height: fit-content;
+
+    padding: 10px;
+    margin-bottom: 100px;
+
+    border-radius: 4px;
+    border: 1px solid black;
+    box-shadow: 3px 3px 5px 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+
+    input {
+      width: 100%;
+      padding: 4px;
+      outline: none;
+      margin-bottom: 5px;
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      line-height: 0;
+      padding: 3.5px 0;
+      border-radius: 4px;
+      background-color: black;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      div {
+        width: 20px;
+        height: 20px;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+
+    i {
+      color: white;
+      font-size: 1rem;
+    }
+  }
+}

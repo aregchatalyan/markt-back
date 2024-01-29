@@ -1,0 +1,10 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+}
+
+body {
+  background-image: linear-gradient(270deg, #3a0404fa, #0f0f3a);
+}

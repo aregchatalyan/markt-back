@@ -8,13 +8,7 @@ export const validationMiddleware = (checks) => async (req, res, next) => {
 
   for (const { path, where = 'body', ...check } of checks) {
     chain = validation[where](path);
-    income = req[{
-      body: 'body',
-      query: 'query',
-      param: 'params',
-      headers: 'header',
-      cookies: 'cookie'
-    }[where]][path];
+    income = req[{ body: 'body', query: 'query', param: 'params', header: 'headers', cookie: 'cookies' }[where]][path];
 
     if (check.required) chain.trim().not().isEmpty()
       .withMessage(messages('required', path));

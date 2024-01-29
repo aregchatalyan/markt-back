@@ -7,8 +7,7 @@ package-lock.json
 !.env.example
 
 # files
-/uploads
 /src/**/*.pem
 
-# temp
-/src/public/**/*.html
+# production
+/build

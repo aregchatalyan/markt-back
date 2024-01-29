@@ -6,18 +6,17 @@ export const socket = (io) => {
   const roomList = new Map();
 
   io.on('connection', (socket) => {
-    socket.on('joinRoom', async ({ roomId, username }, cb) => {
+    socket.on('createRoom', async ({ roomId, userId }, cb) => {
       if (!roomList.has(roomId)) {
+        console.log('Creating room:', { roomId });
+
         const worker = await getMediasoupWorker();
-        const room = new RoomService(roomId, worker, io);
-        roomList.set(roomId, room);
-        console.log('Created new room', { roomId, username });
+        roomList.set(roomId, new RoomService(roomId, worker, io));
+
+        cb(`Created room: ${ roomId }`);
       }
 
-      console.log('User has joined the room', { roomId, username });
-
-      const peer = new PeerService(socket.id, username);
-      roomList.get(roomId).addPeer(peer);
+      roomList.get(roomId).addPeer(new PeerService(socket.id, userId));
 
       socket.roomId = roomId;
 
@@ -27,17 +26,12 @@ export const socket = (io) => {
     socket.on('getProducers', () => {
       if (!roomList.has(socket.roomId)) return;
 
-      console.log('Get producers', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
-      // Send all the current producer to newly joined member
       let producerList = roomList.get(socket.roomId).getProducerListForPeer();
 
       socket.emit('newProducers', producerList);
     });
 
     socket.on('getRouterRtpCapabilities', (_, cb) => {
-      console.log('Get RouterRtpCapabilities', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
       try {
         cb(roomList.get(socket.roomId).getRtpCapabilities());
       } catch (e) {
@@ -46,8 +40,6 @@ export const socket = (io) => {
     });
 
     socket.on('createWebRtcTransport', async (_, cb) => {
-      console.log('Create webrtc transport', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
       try {
         const { params } = await roomList.get(socket.roomId).createWebRtcTransport(socket.id);
 
@@ -58,8 +50,6 @@ export const socket = (io) => {
     });
 
     socket.on('connectTransport', async ({ transportId, dtlsParameters }, cb) => {
-      console.log('Connect transport', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
       if (!roomList.has(socket.roomId)) return;
       await roomList.get(socket.roomId).connectPeerTransport(socket.id, transportId, dtlsParameters);
 
@@ -71,24 +61,11 @@ export const socket = (io) => {
 
       let producerId = await roomList.get(socket.roomId).produce(socket.id, producerTransportId, rtpParameters, kind);
 
-      console.log('Produce', {
-        type: kind,
-        username: roomList.get(socket.roomId).getPeers().get(socket.id).username,
-        id: producerId
-      });
-
       cb({ producerId });
     });
 
     socket.on('consume', async ({ consumerTransportId, producerId, rtpCapabilities }, cb) => {
-      //TODO null handling
       let params = await roomList.get(socket.roomId).consume(socket.id, consumerTransportId, producerId, rtpCapabilities);
-
-      console.log('Consuming', {
-        username: roomList.get(socket.roomId).getPeers().get(socket.id).username,
-        producerId: producerId,
-        consumerId: params?.id
-      });
 
       cb(params);
     });
@@ -98,26 +75,19 @@ export const socket = (io) => {
     socket.on('disconnect', async () => {
       if (!socket.roomId) return;
 
-      console.log('Disconnect', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
       await roomList.get(socket.roomId).removePeer(socket.id);
     });
 
     socket.on('producerClosed', (producerId) => {
-      console.log('Producer close', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
       roomList.get(socket.roomId).closeProducer(socket.id, producerId);
     });
 
     socket.on('exitRoom', async (_, cb) => {
-      console.log('Exit room', { username: roomList.get(socket.roomId).getPeers().get(socket.id).username });
-
       if (!roomList.has(socket.roomId)) {
         cb({ error: 'Not currently in a room' });
         return;
       }
 
-      // close transports
       await roomList.get(socket.roomId).removePeer(socket.id);
 
       if (roomList.get(socket.roomId).getPeers().size === 0) {

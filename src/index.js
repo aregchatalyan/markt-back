@@ -21,8 +21,8 @@ app.use(cors({
   credentials: true,
   origin: config.CLIENT_URL
 }));
-
 app.use(cookie());
+app.use(morgan('dev'));
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: false }));
 
@@ -36,24 +36,28 @@ try {
   });
 
   if (config.DEVELOPMENT) {
-    app.use(morgan('dev'));
-
     httpServer = https.createServer(config.SSL, app);
   } else {
-    app.use(express.static(path.join(dirname(import.meta.url), '../client', 'build')));
+    app.use(express.static(path.join(dirname(import.meta.url), '../meeting', 'build')));
 
     app.get('*', (req, res) => {
-      res.sendFile(path.join(dirname(import.meta.url), '../client/build', 'index.html'));
+      res.sendFile(path.join(dirname(import.meta.url), '../meeting/build', 'index.html'));
     });
 
     httpServer = http.createServer(app);
   }
 
-  httpServer.listen(config.PORT, /*config.HOST,*/ () => {
+  httpServer.listen(config.PORT, () => {
     console.log('Running on port:', config.PORT);
   });
 
-  socket(new Server(httpServer, { cors: { origin: '*' } }));
+  const ServerIO = new Server(httpServer, {
+    cors: {
+      origin: config.CLIENT_URL
+    }
+  });
+
+  socket(ServerIO);
 } catch (e) {
   console.error(e.message);
   process.exit(1);

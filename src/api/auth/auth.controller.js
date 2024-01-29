@@ -26,7 +26,6 @@ export class AuthController {
 
   static async logout(req, res) {
     const { refreshToken } = req.cookies;
-    console.log(refreshToken)
 
     await AuthService.logout(refreshToken);
 

@@ -1,10 +1,8 @@
+import os from 'node:os';
 import mediasoup from 'mediasoup';
 import { settings } from '../settings.js';
 
-const workers = [];
-let nextMediasoupWorkerIdx = 0;
-
-for (let thread = 1; thread <= settings.CPU; thread++) {
+const workers = os.cpus().map(async () => {
   const worker = await mediasoup.createWorker({
     logLevel: settings.worker.logLevel,
     logTags: settings.worker.logTags,
@@ -13,17 +11,18 @@ for (let thread = 1; thread <= settings.CPU; thread++) {
   });
 
   worker.on('died', () => {
-    console.error('mediasoupInit worker died, exiting in 2 seconds... [pid:%d]', worker.pid);
     setTimeout(() => process.exit(1), 2000);
   });
 
-  workers.push(worker);
-}
+  return worker;
+});
+
+let workerIndex = 0;
 
 export const getMediasoupWorker = () => {
-  const worker = workers[nextMediasoupWorkerIdx];
+  const worker = workers[workerIndex];
 
-  if (++nextMediasoupWorkerIdx === workers.length) nextMediasoupWorkerIdx = 0;
+  if (++workerIndex === workers.length) workerIndex = 0;
 
   return worker;
 }
